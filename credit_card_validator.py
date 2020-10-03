@@ -36,6 +36,11 @@ Dodana liczba jest cyfrą kontrolną.
 
 
 def cc_checksum(cc_number: int) -> int:
+    """
+    funkcja oblicza sumę kontrolną dla karty kredytowej
+    :param cc_number:
+    :return:
+    """
     odd_digits = [int(odd_digit) for odd_digit in str(cc_number)[1:-1:2]]
     even_digits = [int(even_digit) * 2 if int(even_digit) * 2 <= 9 else int(even_digit) * 2 - 9
                    for even_digit in str(cc_number)[:-1:2]]
@@ -45,6 +50,11 @@ def cc_checksum(cc_number: int) -> int:
 
 
 def is_cc_valid(cc_number: int) -> bool:
+    """
+    funkcja sprawdza czy numer karty ma 16 znaków i czy suma kontrolna zgadza się z cyfrą sumy w numerze karty
+    :param cc_number:
+    :return:
+    """
     if len(str(cc_number)) != 16:
         return False
     else:

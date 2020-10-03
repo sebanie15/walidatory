@@ -16,8 +16,8 @@ def id_card_checksum(id_card_number: str) -> int:
 	validation_list = [7, 3, 1, 9, 7, 3, 1, 7, 3]
 
 	# jesli w numerze podano inny znak jak cyfre po serii dowodu zwraca -1
-	for digit in id_card_number[4:]:
-		if not digit.isdecimal():
+	for character in id_card_number[4:]:
+		if not character.isdecimal():
 			return -1
 
 	result = [
@@ -40,5 +40,3 @@ def is_id_card_valid(id_card_number: str) -> bool:
 		return False
 	else:
 		return id_card_checksum(id_card_number) == int(id_card_number[3])
-
-print(id_card_checksum('CGC4062G0'))
