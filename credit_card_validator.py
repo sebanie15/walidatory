@@ -34,19 +34,21 @@ Dodana liczba jest cyfrą kontrolną.
 źródło: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
 """
 
-def cc_checksum(cc_number: int) -> int:
-	odd_digits = [int(odd_digit) for odd_digit in str(cc_number)[1:-1:2]]
-	even_digits = [int(even_digit) * 2 if int(even_digit) * 2 <= 9 else int(even_digit) * 2 - 9
-	               for even_digit in str(cc_number)[:-1:2]]
-	sum_of_digits = sum(odd_digits) + sum(even_digits)
 
-	return 10 - (sum_of_digits % 10)
+def cc_checksum(cc_number: int) -> int:
+    odd_digits = [int(odd_digit) for odd_digit in str(cc_number)[1:-1:2]]
+    even_digits = [int(even_digit) * 2 if int(even_digit) * 2 <= 9 else int(even_digit) * 2 - 9
+                   for even_digit in str(cc_number)[:-1:2]]
+    sum_of_digits = sum(odd_digits) + sum(even_digits)
+
+    return 10 - (sum_of_digits % 10)
+
 
 def is_cc_valid(cc_number: int) -> bool:
-	if len(str(cc_number)) != 16:
-		return False
-	else:
-		return cc_checksum(cc_number) == int(str(cc_number)[-1])
+    if len(str(cc_number)) != 16:
+        return False
+    else:
+        return cc_checksum(cc_number) == int(str(cc_number)[-1])
 
 
 cc_numbers = [5188801468561893, 5124409163039475, 5126285024465937, 5126285024465935, 5116225024465933]

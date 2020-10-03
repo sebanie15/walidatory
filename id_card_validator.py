@@ -6,8 +6,19 @@
 
 
 def id_card_checksum(id_card_number: str) -> int:
+	"""
+	funkcje liczy sumę kontrolną na numeru dowodu osobistego
+	- jeśli numer zawiera po serii inny znak niż cyfrę zwraca -1
+	:param id_card_number:
+	:return:
+	"""
 	# upper_letters = [chr(ord_number) for ord_number in range(65, 91)]
 	validation_list = [7, 3, 1, 9, 7, 3, 1, 7, 3]
+
+	# jesli w numerze podano inny znak jak cyfre po serii dowodu zwraca -1
+	for digit in id_card_number[4:]:
+		if not digit.isdecimal():
+			return -1
 
 	result = [
 		(ord(id_card_number[0]) - 55) * validation_list[0],
@@ -20,7 +31,14 @@ def id_card_checksum(id_card_number: str) -> int:
 
 
 def is_id_card_valid(id_card_number: str) -> bool:
+	"""
+	funkcja zwraca informację czy numer dowodu osobistego jest prawidłowy
+	:param id_card_number:
+	:return:
+	"""
 	if len(id_card_number) != 9:
 		return False
 	else:
 		return id_card_checksum(id_card_number) == int(id_card_number[3])
+
+print(id_card_checksum('CGC4062G0'))
