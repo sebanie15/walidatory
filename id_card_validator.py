@@ -4,6 +4,50 @@
 @author: sebanie15
 """
 
+"""
+Numer i seria dowodu osobistego a jego unikalny identyfikator
+
+Dowód osobisty to kluczowy dokument każdego polskiego obywatela. To dzięki niemu potwierdzana jest 
+tożsamość i pochodzenie – co jest szczególnie istotne podczas zagranicznej podróży. Czasem także z pomocą samego dowodu 
+mamy możliwość przemieszczać się po wielu krajach UE oraz Europejskiego Obszaru Gospodarczego. Jednak nawet zwykła 
+wizyta na poczcie lub w banku wymaga wylegitymowania się dokumentem tożsamości.
+
+Warto wspomnieć, że nowe dowody wydawane od 1 marca 2015 roku nie zawierają już takich informacji, jak: 
+wzrost, kolor oczu, wzór podpisu czy adres zameldowania. 
+Za to muszą posiadać podobnie, jak elektroniczny e-dowód dane, jak:
+
+    imię lub imiona i nazwisko,
+    nazwisko rodowe,
+    imiona swoich rodziców,
+    datę i miejsce urodzenia,
+    płeć,
+    zdjęcie,
+    numer PESEL,
+    obywatelstwo
+
+Oprócz tego e-dowód zawiera również numer CAN, który wykorzystywany jest w celu nawiązania bezpiecznego połączenia 
+szyfrowego z dokumentem. Dowód osobisty ważny jest 10 lat i 5 lat – w przypadku dzieci do lat 5.
+
+Co zawiera numer dowodu osobistego?
+
+Składa się z 9 znaków: 3 liter i 6 cyfr. Oto przykład:
+
+ASB232622
+
+    3 litery (od A do Z) – oznaczają serię dokumentu tożsamości
+    6 cyfr – numer dowodu osobistego
+    Cyfra kontrolna – pierwsza cyfra numeru dokumentu. Służy do komputerowej kontroli poprawności i wiarygodności 
+    danego dowodu tożsamości
+    5 kolejnych cyfr – określają serię dowodu
+
+Dlatego, aby sprawdzić poprawność numeru i serii dowodu należy zamienić litery na cyfry i każdej przyporządkować 
+wartość od 10 do 35 (od A do Z). 
+Następnie wymnożyć je przez wyznaczone wagi: 7, 3, 1, 9, 7, 3, 1, 7, 3 i uzyskany wynik podzielić przez 10. 
+UWAGA! Przy mnożeniu pomijamy cyfrę kontrolną. Sumujemy cały wynik i dzielimy przez 10. Uzyskana reszta z dzielenia 
+jest sumą kontrolną. W tym przypadku podobnie, jak we wcześniejszym wyręczy nas kalkulator on-line.
+
+źródło: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
+"""
 
 def id_card_checksum(id_card_number: str) -> int:
 	"""
