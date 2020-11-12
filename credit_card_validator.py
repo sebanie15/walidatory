@@ -5,64 +5,86 @@
 """
 
 """
-Walidacja karty kredytowej – jak to zrobić?
+Credit card validation - how to do it?
 
-W dzisiejszych czasach – standardową kartę płatniczą określają normy ISO IEC_7812. Zgodnie więc z normą ISO, długość 
-numeru karty kredytowej to 16 cyfr. Waliduje go, tzw. algorytm Luhna. Dlatego podobnie, jak przy algorytmie PESEL,
-na końcu ciągu liczb znajduje się cyfra kontrolna. Z jego pomocą możliwe jest również wyliczenie numeru IMEI 
-widniejącego w telefonach komórkowych.
+Nowadays - a standard payment card is defined by ISO IEC_7812 standards. So according to the ISO standard, length
+credit card number is 16 digits. It is validated by the so-called Luhn's algorithm. Therefore, similar to the PESEL 
+algorithm, at the end of the sequence of numbers there is a check digit. With its help, it is also possible to calculate
+the IMEI number visible on cell phones.
 
-Przykład numeru karty kredytowej: 6123 2462 0532 2891:
+Example of a credit card number: 6123 2462 0532 2891:
 
-    6 – Identyfikator Dziedziny Gospodarki – informuje o dziedzinie, jakiej towarzyszy numer karty: 
-        1,2 – linie lotnicze, 
-        3 – podróż i rozrywka, 
-        4, 5 – bankowość, finanse, 
-        6 – handel, bankowość, 
-        7 – przemysł naftowy, 
-        8 – telekomunikacja, 
-        9 – do ustalenia przez jednostki normalizacyjne,
-    123 24 – Numer Identyfikacyjny Wydawcy, np. MasterCard, Visa,
-    62 0532 289 – Identyfikator Rachunku Osobistego, indywidualny numer przypisany do określonego rachunku osobistego,
-    1 – cyfra kontrolna
+    6 - Economy Domain Identifier - informs about the field accompanied by the card number:
+        1,2 - airlines,
+        3 - travel and entertainment,
+        4, 5 - banking, finance,
+        6 - trade, banking,
+        7 - oil industry,
+        8 - telecommunications,
+        9 - to be determined by standardization bodies,
+    123 24 - Publisher Identification Number, e.g. MasterCard, Visa,
+    62 0532 289 - Personal Account Identifier, an individual number assigned to a specific personal account,
+    1 - check digit
 
-Walidacja numeru następuje poprzez podwojenie cyfr, które znajdują się na parzystych miejscach w numerze karty. 
-Od iloczynów większych od 9 odejmowana jest liczba  9. Kolejno sumuje się wszystkie cyfry – również te będące na 
-pozycjach nieparzystych. Do otrzymanej liczby należy dodać taką cyfrę, by wynik był wielokrotnością liczby 10. 
-Dodana liczba jest cyfrą kontrolną.
+The number is validated by doubling the digits in the even places in the card number.
+The number 9 is subtracted from products greater than 9. All digits are added up in sequence - including those on
+odd positions. To the obtained number, add such a digit that the result is a multiple of 10.
+The added number is a check digit.
 
-źródło: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
+source: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
 """
 
 
+CC_NUMBER_LENGTH = 16
+
+
 def cc_checksum(cc_number: int) -> int:
-    """
-    funkcja oblicza sumę kontrolną dla karty kredytowej
-    :param cc_number:
-    :return:
+    """the function calculates a checksum for the credit card
+
+    Args:
+        cc_number: int
+
+    Returns:
+        int
     """
     odd_digits = [int(odd_digit) for odd_digit in str(cc_number)[1:-1:2]]
-    even_digits = [int(even_digit) * 2 if int(even_digit) * 2 <= 9 else int(even_digit) * 2 - 9
-                   for even_digit in str(cc_number)[:-1:2]]
+    even_digits = [
+        int(even_digit) * 2 if int(even_digit) * 2 <= 9 else int(even_digit) * 2 - 9
+        for even_digit in str(cc_number)[:-1:2]
+    ]
     sum_of_digits = sum(odd_digits) + sum(even_digits)
 
     return 10 - (sum_of_digits % 10)
 
 
 def is_cc_valid(cc_number: int) -> bool:
+    """the function checks if the card number has 16 characters and if the check sum is consistent with the sum digit
+    in the card number
+
+    Args:
+        cc_number: int
+    Returns:
+        bool
     """
-    funkcja sprawdza czy numer karty ma 16 znaków i czy suma kontrolna zgadza się z cyfrą sumy w numerze karty
-    :param cc_number:
-    :return:
-    """
-    if len(str(cc_number)) != 16:
-        return False
-    else:
-        return cc_checksum(cc_number) == int(str(cc_number)[-1])
+    checksum_number = int(str(cc_number)[-1])
+    is_correct_length = len(str(cc_number)) == CC_NUMBER_LENGTH
+    is_correct_checksum = cc_checksum(cc_number) == checksum_number
+
+    return is_correct_length and is_correct_checksum
 
 
-cc_numbers = [5188801468561893, 5124409163039475, 5126285024465937, 5126285024465935, 5116225024465933]
+if __name__ == '__main__':
 
-not_valid_cc_numbers = [cc_number for cc_number in cc_numbers if not is_cc_valid(cc_number)]
+    cc_numbers = [
+        5188801468561893,
+        5124409163039475,
+        5126285024465937,
+        5126285024465935,
+        5116225024465933,
+    ]
 
-print(f'nieprawidłowe numery kart to: {not_valid_cc_numbers}')
+    not_valid_cc_numbers = [
+        cc_number for cc_number in cc_numbers if not is_cc_valid(cc_number)
+    ]
+
+    print(f"Invalid card numbers are: {not_valid_cc_numbers}")
