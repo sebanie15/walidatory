@@ -5,82 +5,100 @@
 """
 
 """
-Numer i seria dowodu osobistego a jego unikalny identyfikator
+Number and series of ID card and its unique identifier
 
-Dowód osobisty to kluczowy dokument każdego polskiego obywatela. To dzięki niemu potwierdzana jest 
-tożsamość i pochodzenie – co jest szczególnie istotne podczas zagranicznej podróży. Czasem także z pomocą samego dowodu 
-mamy możliwość przemieszczać się po wielu krajach UE oraz Europejskiego Obszaru Gospodarczego. Jednak nawet zwykła 
-wizyta na poczcie lub w banku wymaga wylegitymowania się dokumentem tożsamości.
+An identity card is a key document of every Polish citizen. It is thanks to him that it is confirmed
+identity and origin - which is especially important when traveling abroad. Sometimes also with the help of the proof 
+itself we can move around many EU countries and the European Economic Area. However, even ordinary
+a visit to the post office or bank requires identification with an identity document.
 
-Warto wspomnieć, że nowe dowody wydawane od 1 marca 2015 roku nie zawierają już takich informacji, jak: 
-wzrost, kolor oczu, wzór podpisu czy adres zameldowania. 
-Za to muszą posiadać podobnie, jak elektroniczny e-dowód dane, jak:
+It is worth mentioning that the new ID cards issued from March 1, 2015 no longer contain information such as:
+height, eye color, signature pattern or registered address.
+However, they must have data similar to electronic e-proof, such as:
 
-    imię lub imiona i nazwisko,
-    nazwisko rodowe,
-    imiona swoich rodziców,
-    datę i miejsce urodzenia,
-    płeć,
-    zdjęcie,
-    numer PESEL,
-    obywatelstwo
+    first name or names and surname,
+    family name,
+    their parents' names,
+    date and place of birth,
+    sex,
+    picture,
+    PESEL number,
+    citizenship
 
-Oprócz tego e-dowód zawiera również numer CAN, który wykorzystywany jest w celu nawiązania bezpiecznego połączenia 
-szyfrowego z dokumentem. Dowód osobisty ważny jest 10 lat i 5 lat – w przypadku dzieci do lat 5.
+In addition, the e-proof also contains a CAN number that is used to establish a secure connection
+with the document. An identity card is valid for 10 years and 5 years - for children up to 5 years old.
 
-Co zawiera numer dowodu osobistego?
+What does the ID number contain?
 
-Składa się z 9 znaków: 3 liter i 6 cyfr. Oto przykład:
+It consists of 9 characters: 3 letters and 6 numbers. Here is an example:
 
 ASB232622
 
-    3 litery (od A do Z) – oznaczają serię dokumentu tożsamości
-    6 cyfr – numer dowodu osobistego
-    Cyfra kontrolna – pierwsza cyfra numeru dokumentu. Służy do komputerowej kontroli poprawności i wiarygodności 
-    danego dowodu tożsamości
-    5 kolejnych cyfr – określają serię dowodu
+    3 letters (from A to Z) - mean a series of identity document
+    6 digits - ID card number
+    Check digit - the first digit of the document number. It is used for computer validation and plausibility checks
+    a given identity card
+    5 consecutive digits - specify a series of proof
 
-Dlatego, aby sprawdzić poprawność numeru i serii dowodu należy zamienić litery na cyfry i każdej przyporządkować 
-wartość od 10 do 35 (od A do Z). 
-Następnie wymnożyć je przez wyznaczone wagi: 7, 3, 1, 9, 7, 3, 1, 7, 3 i uzyskany wynik podzielić przez 10. 
-UWAGA! Przy mnożeniu pomijamy cyfrę kontrolną. Sumujemy cały wynik i dzielimy przez 10. Uzyskana reszta z dzielenia 
-jest sumą kontrolną. W tym przypadku podobnie, jak we wcześniejszym wyręczy nas kalkulator on-line.
+Therefore, in order to verify the correctness of the number and series of the document, you should replace letters with 
+numbers and assign them to each a value from 10 to 35 (A to Z).
+Then multiply them by the designated weights: 7, 3, 1, 9, 7, 3, 1, 7, 3 and divide the result by 10.
+WARNING! We ignore the check digit when multiplying. We sum up the whole result and divide by 10. The remainder obtained 
+from the division is a checksum. In this case, just like in the previous one, the online calculator will do the job.
 
-źródło: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
+source: https://www.czerwona-skarbonka.pl/walidator-danych-walidacja-pesel-regon-nip-krok-po-kroku/
 """
 
+
+ID_CARD_LENGTH = 9
+CHECKSUM_IDX = 3  # counted from 0
+
+
 def id_card_checksum(id_card_number: str) -> int:
-	"""
-	funkcje liczy sumę kontrolną na numeru dowodu osobistego
-	- jeśli numer zawiera po serii inny znak niż cyfrę zwraca -1
-	:param id_card_number:
-	:return:
-	"""
-	# upper_letters = [chr(ord_number) for ord_number in range(65, 91)]
-	validation_list = [7, 3, 1, 9, 7, 3, 1, 7, 3]
+    """
+    functions counts the checksum on the ID card number
+    - if the number contains a character other than a digit after the series, returns -1
 
-	# jesli w numerze podano inny znak jak cyfre po serii dowodu zwraca -1
-	for character in id_card_number[4:]:
-		if not character.isdecimal():
-			return -1
+    Args:
+            id_card_number: str
+    Returns:
+            int
+    """
+    validation_list = [7, 3, 1, 9, 7, 3, 1, 7, 3]
 
-	result = [
-		(ord(id_card_number[0]) - 55) * validation_list[0],
-		(ord(id_card_number[1]) - 55) * validation_list[1],
-		(ord(id_card_number[2]) - 55) * validation_list[2]
-	]
-	result.extend([int(number)*validation_list[idx+4] for idx, number in enumerate(id_card_number[4:])])
+    for character in id_card_number[CHECKSUM_IDX+1:]:
+        if not character.isdecimal():
+            return -1
 
-	return sum(result) % 10
+    result = [
+        (ord(id_card_number[0]) - 55) * validation_list[0],
+        (ord(id_card_number[1]) - 55) * validation_list[1],
+        (ord(id_card_number[2]) - 55) * validation_list[2],
+    ]
+    result.extend(
+        [
+            int(number) * validation_list[idx + CHECKSUM_IDX + 1]
+            for idx, number in enumerate(id_card_number[CHECKSUM_IDX+1:])
+        ]
+    )
+
+    return sum(result) % 10
 
 
 def is_id_card_valid(id_card_number: str) -> bool:
-	"""
-	funkcja zwraca informację czy numer dowodu osobistego jest prawidłowy
-	:param id_card_number:
-	:return:
-	"""
-	if len(id_card_number) != 9:
-		return False
-	else:
-		return id_card_checksum(id_card_number) == int(id_card_number[3])
+    """the function returns information whether the ID card number is correct
+
+    Args:
+            id_card_number: str
+    Returns:
+            bool
+    """
+    checksum_number = int(id_card_number[CHECKSUM_IDX])
+    is_correct_length = len(id_card_number) == ID_CARD_LENGTH
+    is_correct_checksum = id_card_checksum(id_card_number) == checksum_number
+
+    return is_correct_length and is_correct_checksum
+
+
+if __name__ == "__main__":
+    print(id_card_checksum("CGK407100"))
